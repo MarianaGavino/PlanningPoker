@@ -1,8 +1,6 @@
 import CardDeck from "./CardDeck";
 import { useState } from "react";
-import cards from "./CardDeck";
-
-// import Home from "./Home";
+import './CardDeck.css';
 
 type Card = {
   id: number;
@@ -11,8 +9,7 @@ type Card = {
 
 type User = {
   id: number;
-  // name: string,
-  deck: any;
+  deck: Card[];
 };
 
 const UserDeck = () => {
@@ -26,16 +23,32 @@ const UserDeck = () => {
     console.log("Número de participantes: " + usersNumber);
   };
 
-  const users: User[] = [{ id: usersNumber, deck: CardDeck()}];
-
-
-
   const generateDeck = () => {
-    users.map((e) => e.id);
+    const cards: Card[] = [
+      { id: 1, value: "0" },
+      { id: 2, value: "1" },
+      { id: 3, value: "2" },
+      { id: 4, value: "3" },
+      { id: 5, value: "5" },
+      { id: 6, value: "8" },
+      { id: 7, value: "13" },
+      { id: 8, value: "20" },
+      { id: 9, value: "40" },
+      { id: 10, value: "100" },
+      { id: 11, value: "?" },
+    ];
+    return cards;
   };
 
+  // const users: User[] = [{ id: usersNumber, deck: generateDeck() }];
+
+  const users: User[] = new Array(usersNumber).fill(0).map((e, index) => ({
+        id: index +1,
+        deck: generateDeck()
+    }));
 
   console.log(users);
+  console.log(usersNumber)
 
   return (
     <div>
@@ -45,7 +58,16 @@ const UserDeck = () => {
         Submit
       </button>
       <div>
-        
+        {users.map((user) => (
+          <div key={user.id}>
+            <h2>{user.id}</h2>
+            <div className="card-deck">
+            {user.deck.map((card) => (
+              <div className="card" key={card.id}>{card.value}</div>
+            ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

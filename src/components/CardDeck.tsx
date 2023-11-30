@@ -1,7 +1,7 @@
 import React from 'react';
 import './CardDeck.css';
 
-type Card = {
+export interface Card {
   id: number;
   value: string;
 };
@@ -24,7 +24,6 @@ const CardDeck = () => {
     console.log(`Haz hecho clic en la ${cardId}`);
   };
 
-  
   return (
     <div className="card-deck">
       {cards.map((card) => (
