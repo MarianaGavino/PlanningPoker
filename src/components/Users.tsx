@@ -1,6 +1,9 @@
 import CardDeck from "./CardDeck";
 import { useState } from "react";
 import './CardDeck.css';
+import { useDispatch, useSelector } from "react-redux";
+import cardsDeckReducer from './Reducer/reducer';
+import { RootState } from "../store";
 
 type Card = {
   id: number;
@@ -13,6 +16,12 @@ type User = {
 };
 
 const UserDeck = () => {
+
+  const dispatch = useDispatch();
+
+  const fullDeck = useSelector((state: RootState)=>state.cardsDeckReducer.cards)
+
+
   const [usersNumber, setUsersNumber] = useState<number>(1);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,32 +32,20 @@ const UserDeck = () => {
     console.log("Número de participantes: " + usersNumber);
   };
 
-  const generateDeck = () => {
-    const cards: Card[] = [
-      { id: 1, value: "0" },
-      { id: 2, value: "1" },
-      { id: 3, value: "2" },
-      { id: 4, value: "3" },
-      { id: 5, value: "5" },
-      { id: 6, value: "8" },
-      { id: 7, value: "13" },
-      { id: 8, value: "20" },
-      { id: 9, value: "40" },
-      { id: 10, value: "100" },
-      { id: 11, value: "?" },
-    ];
-    return cards;
-  };
-
-  // const users: User[] = [{ id: usersNumber, deck: generateDeck() }];
+ 
 
   const users: User[] = new Array(usersNumber).fill(0).map((e, index) => ({
         id: index +1,
-        deck: generateDeck()
+        deck: fullDeck
     }));
 
   console.log(users);
   console.log(usersNumber)
+
+  const handleClick = (cardId: number) => {
+    console.log(`Haz hecho clic en la ${cardId}`);
+    //dispatch(setCardsDeck([...reducer,userid: id, cardId: idcard ]))
+  };
 
   return (
     <div>
@@ -57,13 +54,14 @@ const UserDeck = () => {
       <button type="submit" onClick={inputValue}>
         Submit
       </button>
-      <div>
+      {/* Deck */}
+      <div className="UserList">
         {users.map((user) => (
           <div key={user.id}>
             <h2>{user.id}</h2>
             <div className="card-deck">
             {user.deck.map((card) => (
-              <div className="card" key={card.id}>{card.value}</div>
+              <div className="card" key={card.id} onClick={()=> handleClick(card.id)}>{card.value}</div>
             ))}
             </div>
           </div>
