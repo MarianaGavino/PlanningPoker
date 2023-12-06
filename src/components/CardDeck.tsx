@@ -1,6 +1,7 @@
 import React from 'react';
 import './CardDeck.css';
 import { useDispatch } from 'react-redux';
+import  UserDeck  from './Users';
 
 export interface Card {
   id: number;
@@ -27,6 +28,9 @@ const dispatch = useDispatch();
     console.log(`Haz hecho clic en la ${cardId}`);
     //dispatch(setCardsDeck([...reducer,userid: id, cardId: idcard ]))
   };
+  const selectCard = () => {
+   
+  }
 
   return (
     <div className="card-deck">
@@ -41,3 +45,4 @@ const dispatch = useDispatch();
 };
 
 export default CardDeck;
+export function cards() {};

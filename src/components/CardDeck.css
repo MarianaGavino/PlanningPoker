@@ -4,21 +4,36 @@
   }
   
   .card {
-    width: 150px;
-    height: 220px;
-    border: 2px solid #6e6f74;
+    width: 3.5rem;
+    height: 7rem;
+    border: 2px solid  #91c43b;
     border-radius: 8px;
     padding: 20px;
     margin: 10px;
     text-align: center;
     font-size: 18px;
     cursor: pointer;
-    background-color:  #91c43b;
+    background-color: white;
     box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.16);
-    color: aliceblue;
-    font-size: 4rem;
+    color:  #91c43b;
+    font-size: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
+  .card:hover {
+    background-color: #92c43b67;
+  }
+
+  .selected {
+    background-color: #91c43b;
+    color: white;
+    /* Otros estilos */
+  }
+  
+
   /* #e6b313 
+  #6e6f74
   #7ebd14*/
   

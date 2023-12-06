@@ -3,6 +3,7 @@ import { persistReducer } from 'redux-persist';                   //almacenar lo
 import storage from 'redux-persist/lib/storage';                //almacenar los valores de manera local
 import thunk from 'redux-thunk';      
 import cardsDeckReducer from './components/Reducer/reducer';                          // Conectar redux persist con toolkit
+import usersReducer from './components/Reducer/user_reducer';
 import { legacy_createStore as createStore } from 'redux';
 import {composeWithDevTools} from 'redux-devtools-extension';
 
@@ -13,6 +14,7 @@ const persistConfig = {
 
   const reducers = combineReducers ({
   cardsDeckReducer: cardsDeckReducer,
+  usersReducer: usersReducer,
 })
 export type RootState = ReturnType<typeof reducers>;
 
