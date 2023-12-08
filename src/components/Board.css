@@ -1,0 +1,35 @@
+.board {
+    background-color: #e6b1138a ;
+    padding-bottom: 1rem;
+    margin: 1rem;
+    border-radius: .5rem;
+    
+}
+
+.selected-cards {
+    display: flex;
+    justify-content: center;
+}
+
+.selected-card {
+        width: 3.5rem;
+        height: 7rem;
+        border: 2px solid  #91c43b;
+        border-radius: .5rem;
+        padding: 1.25rem;
+        margin: 0.62rem;
+        text-align: center;
+        font-size: 1.5rem;
+        background-color: #91c43b;
+        box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.16);
+        color:  #91c43b;
+        font-size: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: default;
+}
+
+.white-background {
+    background-color: white; /* Fondo blanco para las cartas cuando se revelan */
+  }

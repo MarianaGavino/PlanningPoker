@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 import UserDeck from './components/Users';
-import Board from './components/Board';
 
 function App() {
   return (

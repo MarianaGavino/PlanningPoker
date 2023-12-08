@@ -1,9 +1,11 @@
 import { useState } from "react";
+import "./InputUsers.css";
 import "./CardDeck.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { setUserDeck } from "./Actions/acrtions";
 import Board from "./Board";
+import { type } from "os";
 
 export interface Card {
   id: number;
@@ -14,6 +16,10 @@ export interface User {
   id: number;
   deck: Card[];
 }
+
+const CardT: keyof Card = 'value';
+
+
 
 const UserDeck = () => {
   const dispatch = useDispatch();
@@ -52,11 +58,12 @@ const UserDeck = () => {
     console.log(`Haz hecho clic en la ${cardId} del usuario ${userId}`);
     const updateUsersDeck = usersDeck.map((user) => {
       if (user.id === userId) {
-        const removedCardIndex = user.deck.findIndex((card) => card.id === cardId);
-        const removedCard = user.deck.splice(removedCardIndex, 1)[0];
-
-        setDiscardedCards([...discardedCards, removedCard]); // Agregar la carta eliminada al Board
-        return { ...user, deck: user.deck };
+        const updatedDeck = user.deck.filter((card) => card.id !== cardId);
+        const removedCard = user.deck.find((card) => card.id === cardId);
+        if (removedCard) {
+          setDiscardedCards([...discardedCards, removedCard]); // Agregar la carta eliminada al Board
+        }
+        return { ...user, deck: updatedDeck };
       }
       return user;
     });
@@ -64,16 +71,49 @@ const UserDeck = () => {
     dispatch(setUserDeck(updateUsersDeck));
   };
 
+  console.log(discardedCards);
 
+  const valueSelectedCards = discardedCards.map((card) => card.value);
+  console.log("Valores de cartas seleccionadas:" + valueSelectedCards);
 
+  const mostFrequent = (array: Card[]) => {
+    if (array.length === 0) {
+      return null;
+    }
+    const valueFrequency = discardedCards.reduce<Record<string,number>>((acum, {value}) =>{
+      acum[value] = (acum[value] || 0) +1;
+      return acum;
+    },{});
+  
+    const [mostFrequent] = Object.entries(valueFrequency).reduce(
+      (max, [id, rep]) => (rep > max[1] ? [id, rep] : max),
+      ["", 0] as [string, number]
+    );
+      return parseInt(mostFrequent);
+
+  }
+
+  console.log(mostFrequent(discardedCards));
+  
   return (
     <div>
-      <label>How many players?</label>
-      <input type="number" value={usersNumber} onChange={handleInputChange} />
-      <button type="submit" onClick={inputValue}>
-        Submit
-      </button>
-      <div><Board discardedCards={discardedCards}/></div>
+      <div className="players-number">
+        <label className="players-label">How many players?</label>
+        <input
+          className="players-input"
+          type="number"
+          min="1"
+          value={usersNumber}
+          onChange={handleInputChange}
+        />
+        <button className="players-button" type="submit" onClick={inputValue}>
+          Submit
+        </button>
+      </div>
+
+      <div>
+        <Board discardedCards={discardedCards} />
+      </div>
       {/* Deck */}
       <div className="UserList">
         {usersDeck.map((user) => (
@@ -90,7 +130,6 @@ const UserDeck = () => {
                 </div>
               ))}
             </div>
-            {/* <CardDeck /> */}
           </div>
         ))}
       </div>
@@ -98,26 +137,3 @@ const UserDeck = () => {
   );
 };
 export default UserDeck;
-
-{
-  /* <div className="UserList">
-        {users.map((user) => (
-          <div key={user.id}>
-            <h2>{user.id}</h2>
-            <div className="card-deck">
-              {user.deck.map((card) => (
-                <div
-                  className="card"
-                  key={card.id}
-                  onClick={() => handleClick(card.id, user.id)}
-                >
-                  {card.value}
-                </div>
-              ))}
-            </div>
-            {/* <CardDeck /> */
-}
-//     </div>
-//   ))}
-
-// </div> */}

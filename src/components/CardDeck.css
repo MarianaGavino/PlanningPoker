@@ -1,17 +1,18 @@
 .card-deck {
     display: flex;
     flex-wrap: wrap;
+    margin: 1rem;
   }
   
   .card {
     width: 3.5rem;
     height: 7rem;
     border: 2px solid  #91c43b;
-    border-radius: 8px;
-    padding: 20px;
-    margin: 10px;
+    border-radius: .5rem;
+    padding: 1.25rem;
+    margin: 0.62rem;
     text-align: center;
-    font-size: 18px;
+    font-size: 1.5rem;
     cursor: pointer;
     background-color: white;
     box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.16);
