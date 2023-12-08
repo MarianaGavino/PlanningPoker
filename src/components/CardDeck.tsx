@@ -1,7 +1,5 @@
 import React from 'react';
 import './CardDeck.css';
-import { useDispatch } from 'react-redux';
-import  UserDeck  from './Users';
 
 export interface Card {
   id: number;
@@ -10,7 +8,6 @@ export interface Card {
 
 
 const CardDeck = () => {
-const dispatch = useDispatch();
    const cards: Card[] = [
     { id: 1, value: '0' },
     { id: 2, value: '1' },
@@ -24,24 +21,21 @@ const dispatch = useDispatch();
     { id: 10, value: '100' },
     { id: 11, value: '?' },
   ];
-  const handleClick = (cardId: number) => {
-    console.log(`Haz hecho clic en la ${cardId}`);
-    //dispatch(setCardsDeck([...reducer,userid: id, cardId: idcard ]))
-  };
-  const selectCard = () => {
-   
-  }
+  // const handleClick = (cardId: number) => {
+  //   console.log(`Haz hecho clic en la ${cardId}`);
+  //   //dispatch(setCardsDeck([...reducer,userid: id, cardId: idcard ]))
+  // };
 
-  return (
-    <div className="card-deck">
-      {cards.map((card) => (
-        <div key={card.id} className="card" 
-        onClick={() => handleClick(card.id)}>
-          {card.value}
-        </div>
-      ))}
-    </div>
-  );
+  // return (
+  //   <div className="card-deck">
+  //     {cards.map((card) => (
+  //       <div key={card.id} className="card" 
+  //       onClick={() => handleClick(card.id)}>
+  //         {card.value}
+  //       </div>
+  //     ))}
+  //   </div>
+  // );
 };
 
 export default CardDeck;

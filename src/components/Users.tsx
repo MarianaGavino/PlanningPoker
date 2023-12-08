@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { setUserDeck } from "./Actions/acrtions";
 import Board from "./Board";
-import { type } from "os";
 
 export interface Card {
   id: number;
@@ -17,14 +16,14 @@ export interface User {
   deck: Card[];
 }
 
-const CardT: keyof Card = 'value';
-
-
-
 const UserDeck = () => {
   const dispatch = useDispatch();
   const [usersNumber, setUsersNumber] = useState<number>(1);
   const [discardedCards, setDiscardedCards] = useState<Card[]>([]);
+  const [selectedCards, setSelectedCards] = useState<{
+    [key: number]: boolean;
+  }>({});
+  const [cardsMessage, setCardsMessage] = useState(false);
 
   const fullDeck = useSelector(
     (state: RootState) => state.cardsDeckReducer.cards
@@ -39,7 +38,7 @@ const UserDeck = () => {
   };
 
   const inputValue = () => {
-    const users: User[] = new Array(usersNumber).fill(0).map((e, index) => ({
+    const users: User[] = new Array(usersNumber).fill(0).map((_, index) => ({
       id: index + 1,
       deck: fullDeck,
     }));
@@ -56,12 +55,24 @@ const UserDeck = () => {
 
   const handleClick = (cardId: number, userId: number) => {
     console.log(`Haz hecho clic en la ${cardId} del usuario ${userId}`);
+
+
+    const userSelectedCount = selectedCards[userId];
+    console.log(`Seleccionó mas de 1 ${userSelectedCount} el user ${userId}`);
+
+   
+    if (selectedCards[userId]) {
+      setCardsMessage(true);
+      return;
+    }
+
     const updateUsersDeck = usersDeck.map((user) => {
       if (user.id === userId) {
         const updatedDeck = user.deck.filter((card) => card.id !== cardId);
         const removedCard = user.deck.find((card) => card.id === cardId);
         if (removedCard) {
           setDiscardedCards([...discardedCards, removedCard]); // Agregar la carta eliminada al Board
+          setSelectedCards({ ...selectedCards, [userId]: true });
         }
         return { ...user, deck: updatedDeck };
       }
@@ -80,21 +91,23 @@ const UserDeck = () => {
     if (array.length === 0) {
       return null;
     }
-    const valueFrequency = discardedCards.reduce<Record<string,number>>((acum, {value}) =>{
-      acum[value] = (acum[value] || 0) +1;
-      return acum;
-    },{});
-  
+    const valueFrequency = discardedCards.reduce<Record<string, number>>(
+      (acum, { value }) => {
+        acum[value] = (acum[value] || 0) + 1;
+        return acum;
+      },
+      {}
+    );
+
     const [mostFrequent] = Object.entries(valueFrequency).reduce(
       (max, [id, rep]) => (rep > max[1] ? [id, rep] : max),
       ["", 0] as [string, number]
     );
-      return parseInt(mostFrequent);
-
-  }
+    return parseInt(mostFrequent);
+  };
 
   console.log(mostFrequent(discardedCards));
-  
+
   return (
     <div>
       <div className="players-number">
@@ -110,15 +123,23 @@ const UserDeck = () => {
           Submit
         </button>
       </div>
+      {discardedCards.length > 0 ? (
+        <div>
+          <Board discardedCards={discardedCards} mostFrequent={mostFrequent} />
+        </div>
+      ) : (
+        ""
+      )}
 
-      <div>
-        <Board discardedCards={discardedCards} />
-      </div>
       {/* Deck */}
       <div className="UserList">
+        {/* {cardsMessage ? <div>You can only select one card </div> : ""} */}
         {usersDeck.map((user) => (
           <div key={user.id}>
+            {cardsMessage ? <div >You can only select one card </div> : ""}
+
             <h2>{user.id}</h2>
+            
             <div className="card-deck">
               {user.deck.map((card) => (
                 <div
@@ -131,7 +152,7 @@ const UserDeck = () => {
               ))}
             </div>
           </div>
-        ))}
+          ))} 
       </div>
     </div>
   );
