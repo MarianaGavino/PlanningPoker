@@ -20,10 +20,7 @@ const UserDeck = () => {
   const dispatch = useDispatch();
   const [usersNumber, setUsersNumber] = useState<number>(1);
   const [discardedCards, setDiscardedCards] = useState<Card[]>([]);
-  const [selectedCards, setSelectedCards] = useState<{
-    [key: number]: boolean;
-  }>({});
-  const [cardsMessage, setCardsMessage] = useState(false);
+  const [selectedCards, setSelectedCards]:any = useState({});
 
   const fullDeck = useSelector(
     (state: RootState) => state.cardsDeckReducer.cards
@@ -59,12 +56,12 @@ const UserDeck = () => {
 
     const userSelectedCount = selectedCards[userId];
     console.log(`Seleccionó mas de 1 ${userSelectedCount} el user ${userId}`);
+    console.log(selectedCards)
+  
 
-   
-    if (selectedCards[userId]) {
-      setCardsMessage(true);
-      return;
-    }
+    setSelectedCards({
+      [userId]: (selectedCards[userId] || 0) + 1,
+    });
 
     const updateUsersDeck = usersDeck.map((user) => {
       if (user.id === userId) {
@@ -132,12 +129,14 @@ const UserDeck = () => {
       )}
 
       {/* Deck */}
+     
       <div className="UserList">
         {/* {cardsMessage ? <div>You can only select one card </div> : ""} */}
         {usersDeck.map((user) => (
           <div key={user.id}>
-            {cardsMessage ? <div >You can only select one card </div> : ""}
-
+            {selectedCards[user.id] > 1 ? (
+              <div >You can only select one card</div>
+            ) : "" }
             <h2>{user.id}</h2>
             
             <div className="card-deck">
