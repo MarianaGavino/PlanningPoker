@@ -29,3 +29,7 @@ li::marker {
     color: #91c43b;
     font-weight: 500;
 }
+.warning-message {
+    color: red;
+    font-size: 1.2rem;
+}

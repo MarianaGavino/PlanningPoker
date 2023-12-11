@@ -3,7 +3,7 @@ import "./InputUsers.css";
 import "./CardDeck.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { setUserDeck } from "./Actions/acrtions";
+import { setUserDeck as userDeck } from "./Actions/acrtions";
 import Board from "./Board";
 
 export interface Card {
@@ -17,7 +17,7 @@ export interface User {
 }
 
 interface SelectedCards {
-  [userId:number]: boolean;
+  [userId: number]: boolean; // 1: true
 }
 
 const UserDeck = () => {
@@ -25,6 +25,7 @@ const UserDeck = () => {
   const [usersNumber, setUsersNumber] = useState<number>(1);
   const [discardedCards, setDiscardedCards] = useState<Card[]>([]);
   const [selectedCards, setSelectedCards] = useState<SelectedCards>({});
+  const [cardMessage, setCardMessage] = useState<SelectedCards>({});
 
   const fullDeck = useSelector(
     (state: RootState) => state.cardsDeckReducer.cards
@@ -43,15 +44,8 @@ const UserDeck = () => {
       id: index + 1,
       deck: fullDeck,
     }));
-    dispatch(setUserDeck(users));
+    dispatch(userDeck(users));
     console.log("Número de participantes: " + usersNumber);
-
-    let val = Object.keys(users);
-
-    console.log({ users });
-    console.log(users[1]);
-    console.log(val);
-    console.log(usersNumber);
   };
 
   const handleClick = (cardId: number, userId: number) => {
@@ -59,28 +53,28 @@ const UserDeck = () => {
 
     const userSelectedCount = selectedCards[userId];
     console.log(`Seleccionó mas de 1 ${userSelectedCount} el user ${userId}`);
-    console.log(selectedCards)
+    console.log(selectedCards);
+    console.log(selectedCards[userId]);
 
-    if(selectedCards[userId]) {
+    if (selectedCards[userId]) {
+      setCardMessage({ [userId]: true }); //antes de esto esta vacío cardMessage
       return;
     }
-
-   console.log(typeof(selectedCards))
 
     const updateUsersDeck = usersDeck.map((user) => {
       if (user.id === userId) {
         const updatedDeck = user.deck.filter((card) => card.id !== cardId);
         const removedCard = user.deck.find((card) => card.id === cardId);
         if (removedCard) {
-          setDiscardedCards([...discardedCards, removedCard]); // Agregar la carta eliminada al Board
-          setSelectedCards({...selectedCards,[userId]: true });
+          setDiscardedCards([...discardedCards, removedCard]);
+          setSelectedCards({ ...selectedCards, [userId]: true });
         }
         return { ...user, deck: updatedDeck };
       }
       return user;
     });
 
-    dispatch(setUserDeck(updateUsersDeck));
+    dispatch(userDeck(updateUsersDeck));
   };
 
   console.log(discardedCards);
@@ -131,16 +125,15 @@ const UserDeck = () => {
       ) : (
         ""
       )}
-
       {/* Deck */}
-     
       <div className="UserList">
-        {/* {cardsMessage ? <div>You can only select one card </div> : ""} */}
         {usersDeck.map((user) => (
           <div key={user.id}>
-      
+            {cardMessage[user.id] ? (
+              <div className="warning-message"> You can only choose one card </div>
+            ) : null}
             <h2>{user.id}</h2>
-            
+
             <div className="card-deck">
               {user.deck.map((card) => (
                 <div
@@ -153,7 +146,7 @@ const UserDeck = () => {
               ))}
             </div>
           </div>
-          ))} 
+        ))}
       </div>
     </div>
   );

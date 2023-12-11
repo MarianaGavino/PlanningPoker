@@ -1,17 +1,13 @@
 import {SET_USERS_DECK} from "../Types/actionTypes";
 import { User } from "../Users";
 
-// const fullDeck = useSelector(
-//     (state: RootState) => state.cardsDeckReducer.cards
-//   );
-
 const usersDeck: User[] = [];
 
 const initialUsersState = {
     usersDeck: usersDeck, 
   };
   
-  type UsersDeckAction = {
+ export interface UsersDeckAction  {
     type: string;
     payload: User[]; 
   };
