@@ -45,19 +45,13 @@ const UserDeck = () => {
       deck: fullDeck,
     }));
     dispatch(userDeck(users));
-    console.log("Número de participantes: " + usersNumber);
   };
 
   const handleClick = (cardId: number, userId: number) => {
     console.log(`Haz hecho clic en la ${cardId} del usuario ${userId}`);
 
-    const userSelectedCount = selectedCards[userId];
-    console.log(`Seleccionó mas de 1 ${userSelectedCount} el user ${userId}`);
-    console.log(selectedCards);
-    console.log(selectedCards[userId]);
-
     if (selectedCards[userId]) {
-      setCardMessage({ [userId]: true }); //antes de esto esta vacío cardMessage
+      setCardMessage({ [userId]: true });
       return;
     }
 
@@ -77,15 +71,7 @@ const UserDeck = () => {
     dispatch(userDeck(updateUsersDeck));
   };
 
-  console.log(discardedCards);
-
-  const valueSelectedCards = discardedCards.map((card) => card.value);
-  console.log("Valores de cartas seleccionadas:" + valueSelectedCards);
-
   const mostFrequent = (array: Card[]) => {
-    if (array.length === 0) {
-      return null;
-    }
     const valueFrequency = discardedCards.reduce<Record<string, number>>(
       (acum, { value }) => {
         acum[value] = (acum[value] || 0) + 1;
@@ -130,10 +116,11 @@ const UserDeck = () => {
         {usersDeck.map((user) => (
           <div key={user.id}>
             {cardMessage[user.id] ? (
-              <div className="warning-message"> You can only choose one card </div>
+              <div className="warning-message">
+                You can only choose one card
+              </div>
             ) : null}
             <h2>{user.id}</h2>
-
             <div className="card-deck">
               {user.deck.map((card) => (
                 <div

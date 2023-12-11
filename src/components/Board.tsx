@@ -2,7 +2,7 @@ import React from "react";
 import { Card } from "./Users";
 import "./Board.css";
 import "./CardDeck.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface BoardProps {
   discardedCards: Card[];
@@ -12,6 +12,17 @@ interface BoardProps {
 const Board: React.FC<BoardProps> = ({ discardedCards, mostFrequent }) => {
   const [revealed, setRevealed] = useState(false);
   const [mostFrequentVal, setMostFrequentVal] = useState<number | null>(null);
+  const [discussionMessage, setDiscussionMessage] = useState(false);
+
+  useEffect(() => {
+    const allDifferent = () => {
+      const cardValues = discardedCards.map((card) => card.value);
+      return cardValues.every(
+        (value, index) => cardValues.indexOf(value) === index
+      );
+    };
+    setDiscussionMessage(allDifferent());
+  }, [discardedCards]);
 
   const handleReveal = () => {
     setRevealed(true);
@@ -33,9 +44,14 @@ const Board: React.FC<BoardProps> = ({ discardedCards, mostFrequent }) => {
       </div>
       <div className="label-agreement">
         {revealed ? (
-          <label>
-            Agreement value: {mostFrequentVal !== null ? mostFrequentVal : ""}
-          </label>
+          <div>
+            <label>
+              Agreement value: {mostFrequentVal !== null ? mostFrequentVal : ""}
+            </label>
+            {discussionMessage ? (
+              <div>There are different opinions, time to debate</div>
+            ) : null}
+          </div>
         ) : (
           ""
         )}
