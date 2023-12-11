@@ -3,9 +3,6 @@
 This application allows users to estimate user stories collaboratively.
 
 ## Getting Started
-
-To use the application:
-
 1. Select the number of users using the arrows on the right side or by typing with the keyboard.
 2. Click on the 'submit' button.
 3. Decks will appear for each user.
@@ -26,9 +23,4 @@ In the project directory, you can run:
 
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
