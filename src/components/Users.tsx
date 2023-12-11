@@ -16,11 +16,15 @@ export interface User {
   deck: Card[];
 }
 
+interface SelectedCards {
+  [userId:number]: boolean;
+}
+
 const UserDeck = () => {
   const dispatch = useDispatch();
   const [usersNumber, setUsersNumber] = useState<number>(1);
   const [discardedCards, setDiscardedCards] = useState<Card[]>([]);
-  const [selectedCards, setSelectedCards]:any = useState({});
+  const [selectedCards, setSelectedCards] = useState<SelectedCards>({});
 
   const fullDeck = useSelector(
     (state: RootState) => state.cardsDeckReducer.cards
@@ -53,15 +57,15 @@ const UserDeck = () => {
   const handleClick = (cardId: number, userId: number) => {
     console.log(`Haz hecho clic en la ${cardId} del usuario ${userId}`);
 
-
     const userSelectedCount = selectedCards[userId];
     console.log(`Seleccionó mas de 1 ${userSelectedCount} el user ${userId}`);
     console.log(selectedCards)
-  
 
-    setSelectedCards({
-      [userId]: (selectedCards[userId] || 0) + 1,
-    });
+    if(selectedCards[userId]) {
+      return;
+    }
+
+   console.log(typeof(selectedCards))
 
     const updateUsersDeck = usersDeck.map((user) => {
       if (user.id === userId) {
@@ -69,7 +73,7 @@ const UserDeck = () => {
         const removedCard = user.deck.find((card) => card.id === cardId);
         if (removedCard) {
           setDiscardedCards([...discardedCards, removedCard]); // Agregar la carta eliminada al Board
-          setSelectedCards({ ...selectedCards, [userId]: true });
+          setSelectedCards({...selectedCards,[userId]: true });
         }
         return { ...user, deck: updatedDeck };
       }
@@ -134,9 +138,7 @@ const UserDeck = () => {
         {/* {cardsMessage ? <div>You can only select one card </div> : ""} */}
         {usersDeck.map((user) => (
           <div key={user.id}>
-            {selectedCards[user.id] > 1 ? (
-              <div >You can only select one card</div>
-            ) : "" }
+      
             <h2>{user.id}</h2>
             
             <div className="card-deck">

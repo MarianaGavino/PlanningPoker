@@ -33,13 +33,17 @@ const Board: React.FC<BoardProps> = ({ discardedCards, mostFrequent }) => {
       </div>
       <div className="label-agreement">
         {revealed ? (
-        <label >
-          Agreement value: {mostFrequentVal !== null ? mostFrequentVal : ""}
-        </label>
-      ) : ""}
+          <label>
+            Agreement value: {mostFrequentVal !== null ? mostFrequentVal : ""}
+          </label>
+        ) : (
+          ""
+        )}
       </div>
-      
-      <button className="button-Reveal" onClick={handleReveal}>Reveal</button>
+
+      <button className="button-Reveal" onClick={handleReveal}>
+        Reveal
+      </button>
     </div>
   );
 };
