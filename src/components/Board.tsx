@@ -1,8 +1,19 @@
 import React from "react";
 import { Card } from "./Users";
-import "./Board.css";
+// import "./Board.css";
 import "./CardDeck.css";
 import { useState, useEffect } from "react";
+import { 
+  BoardContainer,
+  SelectedCards,
+  Card as CardStyle,
+  RevealLabel,
+  RevealButton,
+  DivContainer,
+  Titles,
+  LabelContainer,
+} from './style';
+
 
 interface BoardProps {
   discardedCards: Card[];
@@ -30,37 +41,36 @@ const Board: React.FC<BoardProps> = ({ discardedCards, mostFrequent }) => {
   };
 
   return (
-    <div className="board">
-      <h2>Selected Cards</h2>
-      <div className="selected-cards">
+    <BoardContainer>
+      <Titles FontSize="1.5rem">Selected Cards</Titles>
+      <SelectedCards>
         {discardedCards.map((card) => (
-          <div
-            className={`selected-card ${revealed ? "white-background" : ""}`}
+          <CardStyle BackgroundColor={revealed ? "white" : "#91c43b"}
             key={card.id}
           >
             {card.value}
-          </div>
+          </CardStyle>
         ))}
-      </div>
-      <div className="label-agreement">
+      </SelectedCards>
+      <RevealLabel>
         {revealed ? (
-          <div>
-            <label>
+          <DivContainer>
+            <LabelContainer>
               Agreement value: {mostFrequentVal !== null ? mostFrequentVal : ""}
-            </label>
+            </LabelContainer>
             {discussionMessage ? (
-              <div>There are different opinions, time to debate</div>
+              <DivContainer>There are different opinions, time to debate</DivContainer>
             ) : null}
-          </div>
+          </DivContainer>
         ) : (
           ""
         )}
-      </div>
+      </RevealLabel>
 
-      <button className="button-Reveal" onClick={handleReveal}>
+      <RevealButton className="button-Reveal" onClick={handleReveal}>
         Reveal
-      </button>
-    </div>
+      </RevealButton>
+    </BoardContainer>
   );
 };
 

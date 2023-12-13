@@ -1,35 +1,35 @@
-.rules-container {
+/* .rules-container {
     display: flex;
     flex-direction: column;
     margin: 1rem;
-}
+} */
 
-.title {
+/* .title {
     color: #e6b313;
     font-weight: bold;
     font-size: 2rem;
-}
-.description {
+} */
+/* .description {
     display: flex;
     text-align: justify;
     margin-bottom: .5rem;
-}
-.subtitle {
+} */
+/* .subtitle {
     color: #e6b313;
     font-weight: bold;
     font-size: 1.5rem;
-}
-.rule-list{
+} */
+/* .rule-list{
     text-align: start;
-}
-li {
+} */
+/* li {
     font-weight: bold;
-}
+} */
 li::marker {
     color: #91c43b;
     font-weight: 500;
 }
-.warning-message {
+/* .warning-message {
     color: red;
     font-size: 1.2rem;
-}
+} */

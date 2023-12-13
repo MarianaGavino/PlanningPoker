@@ -1,10 +1,19 @@
 import { useState } from "react";
-import "./InputUsers.css";
-import "./CardDeck.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { setUserDeck as userDeck } from "./Actions/acrtions";
 import Board from "./Board";
+import {
+  Input,
+  Label,
+  Button,
+  ContainerC,
+  Card,
+  CardDeck,
+  WarningMessage,
+  DivContainer,
+  Titles,
+} from "./style";
 
 export interface Card {
   id: number;
@@ -50,6 +59,9 @@ const UserDeck = () => {
   const handleClick = (cardId: number, userId: number) => {
     console.log(`Haz hecho clic en la ${cardId} del usuario ${userId}`);
 
+    console.log([userId]);
+    const ejem = selectedCards[userId];
+    console.log(ejem);
     if (selectedCards[userId]) {
       setCardMessage({ [userId]: true });
       return;
@@ -71,7 +83,7 @@ const UserDeck = () => {
     dispatch(userDeck(updateUsersDeck));
   };
 
-  const mostFrequent = (array: Card[]) => {
+  const mostFrequent = () => {
     const valueFrequency = discardedCards.reduce<Record<string, number>>(
       (acum, { value }) => {
         acum[value] = (acum[value] || 0) + 1;
@@ -87,55 +99,53 @@ const UserDeck = () => {
     return parseInt(mostFrequent);
   };
 
-  console.log(mostFrequent(discardedCards));
-
   return (
-    <div>
-      <div className="players-number">
-        <label className="players-label">How many players?</label>
-        <input
-          className="players-input"
+    <DivContainer>
+      <ContainerC Height="10rem" Margin="1rem 3rem 1rem 3rem">
+        <Label MarginBottom="1rem">How many players?</Label>
+        <Input
+          AlignSelf="center" MarginBottom=".5rem"
           type="number"
           min="1"
           value={usersNumber}
           onChange={handleInputChange}
         />
-        <button className="players-button" type="submit" onClick={inputValue}>
+        <Button Widht="20rem" Cursor="pointer" Color="#6e6f74" AlignSelf="center" type="submit" onClick={inputValue}>
           Submit
-        </button>
-      </div>
+        </Button>
+      </ContainerC>
       {discardedCards.length > 0 ? (
-        <div>
+        <DivContainer>
           <Board discardedCards={discardedCards} mostFrequent={mostFrequent} />
-        </div>
+        </DivContainer>
       ) : (
         ""
       )}
       {/* Deck */}
-      <div className="UserList">
+      <DivContainer>
         {usersDeck.map((user) => (
-          <div key={user.id}>
+          <DivContainer key={user.id}>
             {cardMessage[user.id] ? (
-              <div className="warning-message">
+              <WarningMessage>
                 You can only choose one card
-              </div>
+              </WarningMessage>
             ) : null}
-            <h2>{user.id}</h2>
-            <div className="card-deck">
+            <Titles FontSize="1.5rem">{user.id}</Titles>
+            <CardDeck>
               {user.deck.map((card) => (
-                <div
-                  className="card"
+                <Card Cursor="pointer" BackgroundColor="white" Hover="#92c43b67"
+
                   key={card.id}
                   onClick={() => handleClick(card.id, user.id)}
                 >
                   {card.value}
-                </div>
+                </Card>
               ))}
-            </div>
-          </div>
+            </CardDeck>
+          </DivContainer>
         ))}
-      </div>
-    </div>
+      </DivContainer>
+    </DivContainer>
   );
 };
 export default UserDeck;

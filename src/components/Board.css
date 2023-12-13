@@ -1,15 +1,14 @@
-.board {
+/* .board {
     background-color: #e6b1138a ;
     padding-bottom: 1rem;
     margin: 1rem;
-    border-radius: .5rem;
-    
-}
+    border-radius: .5rem;   
+} */
 
-.selected-cards {
+/* .selected-cards {
     display: flex;
     justify-content: center;
-}
+} */
 
 .selected-card {
         width: 3.5rem;
@@ -34,11 +33,11 @@
     background-color: white; /* Fondo blanco para las cartas cuando se revelan */
   }
 
-.label-agreement {
+/* .label-agreement {
     font-size: 1.2rem;
     margin: .5rem;
-}
-.button-Reveal {
+} */
+/* .button-Reveal {
     height: 2rem;
     width: 15rem;
     border: 1.5px solid #6e6f74;
@@ -47,4 +46,4 @@
     background-color: white;
     color: black;
     align-self: center;
-}
+} */
