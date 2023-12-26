@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
-import { onSnapshot, collection, doc, setDoc, addDoc } from 'firebase/firestore';
+import { useState } from 'react';
+import { collection, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { setUserDeck as userDeck } from "./Actions/acrtions";
 import Board from "./Board";
-import db from '../firestoreConfig';
+import {db} from '../firestoreConfig';
+
 import {
   Input,
   Label,
@@ -31,7 +32,7 @@ interface SelectedCards {
   [userId: number]: boolean; // 1: true
 }
 
-const UserDeck = () => {
+const UserDeck = ({gameDocumentId}: any) => {
   const dispatch = useDispatch();
   const [usersNumber, setUsersNumber] = useState<number>(1);
   const [discardedCards, setDiscardedCards] = useState<Card[]>([]);
@@ -80,14 +81,19 @@ const UserDeck = () => {
     usersNumberFirestore(users);
   };
 
-
   const discardedCardsFirestore = async (userId: number, cardId:number, cardValue: string) => {
-    const discardedCardsCollection = collection(db, "discardedCards");
+    if (!gameDocumentId) {
+      console.log("no hay document ID");
+    }
+
+    const gameDocRef = doc(db, "planning-poker", gameDocumentId);
     try {
-      await addDoc(discardedCardsCollection, {userId, cardId, cardValue});
-      console.log(`Carta ${cardId} del user ${userId}`);
+      await updateDoc(gameDocRef, {
+        [`users ${userId}`]: {userId, cardId, cardValue},
+      });
+      console.log(`Carta ${cardId} del user ${userId} guardada en Firestore`);
     } catch (error) {
-      console.log("Error");
+      console.error("Error al guardar la carta en Firestore:", error);
     }
   }
 
