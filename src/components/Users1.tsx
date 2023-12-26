@@ -1,11 +1,5 @@
-import { useState, useEffect } from "react";
-import {
-  onSnapshot,
-  collection,
-  doc,
-  addDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { useState } from "react";
+import { collection, doc, addDoc, updateDoc } from "firebase/firestore";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import Board1 from "./Board1";
@@ -22,7 +16,7 @@ import {
   Titles,
 } from "./style";
 
-export interface Card {
+export interface DeckCard {
   id: number;
   value: string;
 }
@@ -32,19 +26,8 @@ export interface User {
   cardValue: string;
 }
 
-export interface SelectedUser {
-  user: User;
-  selectedCard: Card;
-}
-interface UserData {
-  id: number;
-  cardValue: string | null;
-}
-
 const UserDeck1 = () => {
-  const [selectedCards, setSelectedCards] = useState<Card[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<SelectedUser[]>([]);
-
+  const [selectedCards, setSelectedCards] = useState<DeckCard[]>([]);
   const [gameDocumentId, setGameDocumentId] = useState<string | null>(null);
   const [joinedGame, setJoinedGame] = useState<boolean>(false);
   const [inputGameDocumentId, setInputGameDocumentId] = useState<string>("");
@@ -108,30 +91,10 @@ const UserDeck1 = () => {
     console.log("User creado", user);
     setJoinedGame(true);
     setGameDocumentId(inputGameDocumentId);
+
+    console.log("Unido al juego", inputGameDocumentId);
+
   };
-
-  useEffect(() => {
-    if (joinedGame) {
-      const gameDocRef = doc(db, "planning-poker", inputGameDocumentId);
-
-      const unsubscribe = onSnapshot(gameDocRef, (doc) => {
-        const data = doc.data();
-        if (data) {
-          const updatedSelectedUsers: SelectedUser[] = Object.values(data).map(
-            (userData: UserData) => ({
-              user: userData as User,
-              selectedCard: fullDeck.find(
-                (card) => card.value === userData.cardValue
-              ) || { id: 0, value: "" },
-            })
-          );
-          setSelectedUsers(updatedSelectedUsers);
-        }
-      });
-
-      return () => unsubscribe();
-    }
-  }, [joinedGame, inputGameDocumentId, fullDeck]);
 
   const handleClickDeck2 = async (cardValue: string) => {
     const gameDocRef = doc(db, "planning-poker", inputGameDocumentId);
@@ -147,7 +110,7 @@ const UserDeck1 = () => {
     });
     console.log("cardV:", cardValue, "para user", currentUserId);
 
-    const selectedCard: Card = {
+    const selectedCard: DeckCard = {
       id: selectedCards.length + 1,
       value: cardValue,
     };
@@ -195,7 +158,8 @@ const UserDeck1 = () => {
       {cardMessage && (
         <WarningMessage>You can only choose one card</WarningMessage>
       )}
-      {/* Deck 2 */}
+       {/* /* Deck 2 /* */}
+      
       {joinedGame && (
         <DivContainer>
           <Titles FontSize="1.5rem">User {currentUserId}</Titles>
