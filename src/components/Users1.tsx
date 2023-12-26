@@ -28,7 +28,7 @@ export interface User {
 
 const UserDeck1 = () => {
   const [selectedCards, setSelectedCards] = useState<DeckCard[]>([]);
-  const [gameDocumentId, setGameDocumentId] = useState<string | null>(null);
+  const [gameDocumentId, setGameDocumentId] = useState<string>('');
   const [joinedGame, setJoinedGame] = useState<boolean>(false);
   const [inputGameDocumentId, setInputGameDocumentId] = useState<string>("");
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
@@ -62,8 +62,10 @@ const UserDeck1 = () => {
       setGameDocumentId(docCode);
       console.log("doc creado", docCode);
 
+      await joinGame(docCode);
+      
     } catch (error) {
-      console.log("no se puedo crear el doc");
+      console.log("no se puedo crear el doc", error);
     }
   };
 
@@ -73,12 +75,13 @@ const UserDeck1 = () => {
     setInputGameDocumentId(event.target.value);
   };
 
-  const joinGame = async () => {
-    if (!inputGameDocumentId) {
-      return;
-    }
+  const joinGame = async (gameDocId: string) => {
+    // if (!inputGameDocumentId) {
+    //   return;
+    // }
+  
     const userId = Math.floor(Math.random() * 1000);
-    const gameDocRef = doc(db, "planning-poker", inputGameDocumentId);
+    const gameDocRef = doc(db, "planning-poker", gameDocId);
     const user = {
       userId: userId,
       cardValue: null,
@@ -87,17 +90,18 @@ const UserDeck1 = () => {
     await updateDoc(gameDocRef, {
       [user.userId]: user,
     });
+   
     setCurrentUserId(userId);
     console.log("User creado", user);
     setJoinedGame(true);
-    setGameDocumentId(inputGameDocumentId);
+    setGameDocumentId(gameDocId);
 
-    console.log("Unido al juego", inputGameDocumentId);
+    console.log("Unido al juego", gameDocumentId);
 
   };
 
   const handleClickDeck2 = async (cardValue: string) => {
-    const gameDocRef = doc(db, "planning-poker", inputGameDocumentId);
+    const gameDocRef = doc(db, "planning-poker", gameDocumentId);
 
     if (selectedCards.length > 0) {
       setCardMessage("Solo puede seleccionar una carta");
@@ -120,7 +124,7 @@ const UserDeck1 = () => {
   return (
     <DivContainer>
       <ContainerC Height="15rem" Margin="1rem 3rem 1rem 3rem">
-        <label>El id del juego es: {gameDocumentId}</label>
+        <label>El id del juego es: {gameDocumentId || "No game"}</label>
         <Titles FontSize="2rem" Color="#e6b313">
           Nuevo Juego
         </Titles>
@@ -146,7 +150,7 @@ const UserDeck1 = () => {
           Widht="20rem"
           Cursor="pointer"
           AlignSelf="center"
-          onClick={joinGame}
+          onClick={()=> joinGame(gameDocumentId) }
         >
           Join
         </Button>
