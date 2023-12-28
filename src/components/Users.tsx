@@ -50,26 +50,19 @@ const UserDeck = ({gameDocumentId}: any) => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsersNumber(parseInt(event.target.value));
   };
-  //fireStore
   const usersNumberFirestore = async (users: User[]) => {
     const allUsersCollection = collection(db, "allUsers");
-    //const userDocRef = doc(allUsersCollection, "usersNumber");
     try {
       users.forEach(async(user)=> {
         const userDocRef = doc(allUsersCollection, String(user.id));
         await setDoc(userDocRef, user);
         console.log("user save", user)
       });
-      // await setDoc(userDocRef, { usersNumber: number }); 
-      // const userDocRef = await addDoc(allUsersCollection, { usersNumber});
-      // console.log('Número de usuarios guardado en Firestore:', number);
+     
     } catch (error) {
       console.error('Error al guardar el número de usuarios:', error);
     }
   };
-  // useEffect(()=> {
-  //   usersNumberFirestore(usersNumber);
-  // }, [usersNumber])
 
   const inputValue = () => {
     const users: User[] = new Array(usersNumber).fill(0).map((_, index) => ({

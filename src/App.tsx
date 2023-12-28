@@ -1,20 +1,13 @@
-import React from 'react';
-// import {Routes, Route} from "react-router-dom"
-import './App.css';
-import UserDeck1 from './components/Users1';
-import Rules from './components/Rules';
-import Home from './components/Home';
+import React from "react";
+import "./App.css";
+import FirebasePlanningPoker from "./components/FirebasePlanningPoker";
+import Rules from "./components/Rules";
 
 function App() {
   return (
     <div className="App">
-      
-        <Rules />
-        {/* <Home /> */}
-        <UserDeck1 />
-      
-      
-      
+      <Rules />
+      <FirebasePlanningPoker />
     </div>
   );
 }

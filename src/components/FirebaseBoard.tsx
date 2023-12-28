@@ -1,10 +1,9 @@
 import React from "react";
-import { Card } from "./Users";
-import "./CardDeck.css";
+import { DeckCard } from "./FirebasePlanningPoker";
 import { useState, useEffect } from "react";
 import { onSnapshot, doc } from "firebase/firestore";
 import { db } from "../firestoreConfig";
-import { 
+import {
   BoardContainer,
   SelectedCards,
   Card as CardStyle,
@@ -13,19 +12,21 @@ import {
   DivContainer,
   Titles,
   LabelContainer,
-} from './style';
-
+} from "./style";
 
 interface BoardProps {
-  mostFrequent: (array: Card[]) => number | null;
+  mostFrequent: (array: DeckCard[]) => number | null;
   gameDocumentId: string | null;
 }
-
-const Board1: React.FC<BoardProps> = ({ mostFrequent, gameDocumentId }) => {
+interface UserData {
+  userId: number;
+  cardValue: string;
+}
+const FirebaseBoard: React.FC<BoardProps> = ({ mostFrequent, gameDocumentId }) => {
   const [revealed, setRevealed] = useState(false);
   const [mostFrequentVal, setMostFrequentVal] = useState<number | null>(null);
   const [discussionMessage, setDiscussionMessage] = useState(false);
-  const [selectedCards, setSelectedCards] = useState<Card[]>([]);
+  const [selectedCards, setSelectedCards] = useState<DeckCard[]>([]);
 
   useEffect(() => {
     if (gameDocumentId) {
@@ -34,12 +35,12 @@ const Board1: React.FC<BoardProps> = ({ mostFrequent, gameDocumentId }) => {
       const unsubscribe = onSnapshot(gameDocRef, (doc) => {
         const data = doc.data();
         if (data) {
-          const updatedSelectedCards: Card[] = Object.values(data).map(
-            (userData: any) => ({
-              id: userData.userId, 
+          const updatedSelectedCards: DeckCard[] = Object.values(data)
+            .map((userData: UserData) => ({
+              id: userData.userId,
               value: userData.cardValue,
-            })
-          ).filter((card)=> card.value !==null);
+            }))
+            .filter((card) => card.value !== null);
           setSelectedCards(updatedSelectedCards);
         }
       });
@@ -47,19 +48,6 @@ const Board1: React.FC<BoardProps> = ({ mostFrequent, gameDocumentId }) => {
       return () => unsubscribe();
     }
   }, [gameDocumentId]);
-
-
-  // useEffect(() => {
-  //   const allDifferent = () => {
-  //     const cardValues = selectedCards.map((card) => card.value);
-  //     return cardValues.every(
-  //       (value, index) => cardValues.indexOf(value) === index
-  //     );
-  //   };
-  //   setDiscussionMessage(allDifferent());
-
-  // }, [selectedCards]);
-
 
   useEffect(() => {
     const allDifferent = () => {
@@ -74,8 +62,6 @@ const Board1: React.FC<BoardProps> = ({ mostFrequent, gameDocumentId }) => {
   const handleReveal = () => {
     setRevealed(true);
     setMostFrequentVal(mostFrequent(selectedCards));
-
-
   };
 
   return (
@@ -83,7 +69,8 @@ const Board1: React.FC<BoardProps> = ({ mostFrequent, gameDocumentId }) => {
       <Titles FontSize="1.5rem">Selected Cards</Titles>
       <SelectedCards>
         {selectedCards.map((card) => (
-          <CardStyle BackgroundColor={revealed ? "white" : "#91c43b"}
+          <CardStyle
+            BackgroundColor={revealed ? "white" : "#91c43b"}
             key={card.id}
           >
             {card.value}
@@ -97,7 +84,9 @@ const Board1: React.FC<BoardProps> = ({ mostFrequent, gameDocumentId }) => {
               Agreement value: {mostFrequentVal !== null ? mostFrequentVal : ""}
             </LabelContainer>
             {discussionMessage ? (
-              <DivContainer>There are different opinions, time to debate</DivContainer>
+              <DivContainer>
+                There are different opinions, time to debate
+              </DivContainer>
             ) : null}
           </DivContainer>
         ) : (
@@ -112,4 +101,4 @@ const Board1: React.FC<BoardProps> = ({ mostFrequent, gameDocumentId }) => {
   );
 };
 
-export default Board1;
+export default FirebaseBoard;

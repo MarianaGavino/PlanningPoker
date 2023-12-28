@@ -1,6 +1,5 @@
 import React from "react";
 import { Card } from "./Users";
-import "./CardDeck.css";
 import { useState, useEffect } from "react";
 import { 
   BoardContainer,

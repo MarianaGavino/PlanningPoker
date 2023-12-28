@@ -2,7 +2,7 @@ import { useState } from "react";
 import { collection, doc, addDoc, updateDoc } from "firebase/firestore";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
-import Board1 from "./Board1";
+import FirebaseBoard from "./FirebaseBoard";
 import { db } from "../firestoreConfig";
 
 import {
@@ -26,13 +26,13 @@ export interface User {
   cardValue: string;
 }
 
-const UserDeck1 = () => {
+const FirebasePlanningPoker = () => {
   const [selectedCards, setSelectedCards] = useState<DeckCard[]>([]);
   const [gameDocumentId, setGameDocumentId] = useState<string>('');
   const [joinedGame, setJoinedGame] = useState<boolean>(false);
-  const [inputGameDocumentId, setInputGameDocumentId] = useState<string>("");
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [cardMessage, setCardMessage] = useState<string | null>(null);
+  const [newGameErrorMessage, setNewGameErrorMessage] = useState("");
 
   const fullDeck = useSelector(
     (state: RootState) => state.cardsDeckReducer.cards
@@ -55,33 +55,32 @@ const UserDeck1 = () => {
   };
 
   const newGame = async () => {
+    
     const createNewGame = collection(db, "planning-poker");
     try {
       const docRef = await addDoc(createNewGame, {});
       const docCode = docRef.id;
-      setGameDocumentId(docCode);
-      console.log("doc creado", docCode);
 
+      setGameDocumentId(docCode);
       await joinGame(docCode);
       
     } catch (error) {
-      console.log("no se puedo crear el doc", error);
+      setNewGameErrorMessage("Couldn't create the game, please try again")
     }
   };
 
   const handleGameDocumentIdChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setInputGameDocumentId(event.target.value);
+    const inputDocId = event.target.value;
+    setGameDocumentId(inputDocId);
   };
 
   const joinGame = async (gameDocId: string) => {
-    // if (!inputGameDocumentId) {
-    //   return;
-    // }
-  
+
     const userId = Math.floor(Math.random() * 1000);
     const gameDocRef = doc(db, "planning-poker", gameDocId);
+
     const user = {
       userId: userId,
       cardValue: null,
@@ -92,11 +91,8 @@ const UserDeck1 = () => {
     });
    
     setCurrentUserId(userId);
-    console.log("User creado", user);
     setJoinedGame(true);
     setGameDocumentId(gameDocId);
-
-    console.log("Unido al juego", gameDocumentId);
 
   };
 
@@ -109,10 +105,8 @@ const UserDeck1 = () => {
     }
 
     await updateDoc(gameDocRef, {
-      // [`${currentUserId}.cardValue`]: cardValue,
       [`${currentUserId}`]: { cardValue },
     });
-    console.log("cardV:", cardValue, "para user", currentUserId);
 
     const selectedCard: DeckCard = {
       id: selectedCards.length + 1,
@@ -124,9 +118,9 @@ const UserDeck1 = () => {
   return (
     <DivContainer>
       <ContainerC Height="15rem" Margin="1rem 3rem 1rem 3rem">
-        <label>El id del juego es: {gameDocumentId || "No game"}</label>
+        <label>Game ID: {gameDocumentId || "No game"}</label>
         <Titles FontSize="2rem" Color="#e6b313">
-          Nuevo Juego
+          New Game
         </Titles>
         <Button
           Widht="20rem"
@@ -136,14 +130,18 @@ const UserDeck1 = () => {
         >
           New
         </Button>
+        {newGameErrorMessage && (
+          <WarningMessage>{newGameErrorMessage}</WarningMessage>
+        )}
         <Titles FontSize="1.5rem" Color="#91c43b">
-          Unirse a un juego
+          Join a Game
         </Titles>
         <Input
           AlignSelf="center"
           MarginBottom=".5rem"
           type="text"
-          value={inputGameDocumentId}
+          placeholder="Put here the game ID"
+          value={gameDocumentId}
           onChange={handleGameDocumentIdChange}
         />
         <Button
@@ -157,13 +155,13 @@ const UserDeck1 = () => {
       </ContainerC>
 
       <DivContainer>
-        <Board1 mostFrequent={mostFrequent} gameDocumentId={gameDocumentId} />
+        <FirebaseBoard mostFrequent={mostFrequent} gameDocumentId={gameDocumentId} />
       </DivContainer>
       {cardMessage && (
         <WarningMessage>You can only choose one card</WarningMessage>
       )}
-       {/* /* Deck 2 /* */}
-      
+
+       {/*  Deck  */}
       {joinedGame && (
         <DivContainer>
           <Titles FontSize="1.5rem">User {currentUserId}</Titles>
@@ -185,4 +183,4 @@ const UserDeck1 = () => {
     </DivContainer>
   );
 };
-export default UserDeck1;
+export default FirebasePlanningPoker;
