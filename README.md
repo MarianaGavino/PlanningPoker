@@ -6,17 +6,16 @@ This application allows users to estimate user stories collaboratively.
 
 To use the application:
 
-1. Select the number of users using the arrows on the right side or by typing with the keyboard.
-2. Click on the 'submit' button.
-3. Decks will appear for each user.
+1. Click on "New" to create a new game
+2. Decks will appear for each user
+3. Join a Game.
+   For other players to join your game, you'll need to share the game ID with them. They should put it where it says "put here game id" and then click on "Join."
 4. Each user can choose only one card to make their estimation.
 5. Once all users have selected their cards, click the 'Reveal' button.
 6. Review the most repeated estimation or engage in discussion if needed.
 
 ## Usage
 
-- Use arrows or keyboard input to select the number of users.
-- Click 'submit' to proceed.
 - Each user selects one card for estimation.
 - Click 'Reveal' to see the collective estimation or discuss further.
 
