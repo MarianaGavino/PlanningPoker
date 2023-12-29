@@ -28,7 +28,7 @@ export interface User {
 
 const FirebasePlanningPoker = () => {
   const [selectedCards, setSelectedCards] = useState<DeckCard[]>([]);
-  const [gameDocumentId, setGameDocumentId] = useState<string>('');
+  const [gameDocumentId, setGameDocumentId] = useState<string>("");
   const [joinedGame, setJoinedGame] = useState<boolean>(false);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [cardMessage, setCardMessage] = useState<string | null>(null);
@@ -39,23 +39,30 @@ const FirebasePlanningPoker = () => {
   );
 
   const mostFrequent = () => {
-    const valueFrequency = selectedCards.reduce<Record<string, number>>(
-      (acum, { value }) => {
-        acum[value] = (acum[value] || 0) + 1;
-        return acum;
-      },
-      {}
-    );
+    const valueFrequency: Record<string, number> = {};
 
-    const [mostFrequent] = Object.entries(valueFrequency).reduce(
-      (max, [id, rep]) => (rep > max[1] ? [id, rep] : max),
-      ["", 0] as [string, number]
-    );
-    return parseInt(mostFrequent);
+    selectedCards.forEach(({ value }) => {
+      if (valueFrequency[value]) {
+        valueFrequency[value]++;
+      } else {
+        valueFrequency[value] = 1;
+      }
+    });
+
+    let maxCount = 0;
+    let mostFrequentValue = "";
+
+    Object.keys(valueFrequency).forEach((value) => {
+      if (valueFrequency[value] > maxCount) {
+        maxCount = valueFrequency[value];
+        mostFrequentValue = value;
+      }
+    });
+
+    return parseInt(mostFrequentValue);
   };
 
   const newGame = async () => {
-    
     const createNewGame = collection(db, "planning-poker");
     try {
       const docRef = await addDoc(createNewGame, {});
@@ -63,9 +70,8 @@ const FirebasePlanningPoker = () => {
 
       setGameDocumentId(docCode);
       await joinGame(docCode);
-      
     } catch (error) {
-      setNewGameErrorMessage("Couldn't create the game, please try again")
+      setNewGameErrorMessage("Couldn't create the game, please try again");
     }
   };
 
@@ -77,7 +83,6 @@ const FirebasePlanningPoker = () => {
   };
 
   const joinGame = async (gameDocId: string) => {
-
     const userId = Math.floor(Math.random() * 1000);
     const gameDocRef = doc(db, "planning-poker", gameDocId);
 
@@ -89,11 +94,10 @@ const FirebasePlanningPoker = () => {
     await updateDoc(gameDocRef, {
       [user.userId]: user,
     });
-   
+
     setCurrentUserId(userId);
     setJoinedGame(true);
     setGameDocumentId(gameDocId);
-
   };
 
   const handleClickDeck2 = async (cardValue: string) => {
@@ -148,20 +152,23 @@ const FirebasePlanningPoker = () => {
           Widht="20rem"
           Cursor="pointer"
           AlignSelf="center"
-          onClick={()=> joinGame(gameDocumentId) }
+          onClick={() => joinGame(gameDocumentId)}
         >
           Join
         </Button>
       </ContainerC>
 
       <DivContainer>
-        <FirebaseBoard mostFrequent={mostFrequent} gameDocumentId={gameDocumentId} />
+        <FirebaseBoard
+          mostFrequent={mostFrequent}
+          gameDocumentId={gameDocumentId}
+        />
       </DivContainer>
       {cardMessage && (
         <WarningMessage>You can only choose one card</WarningMessage>
       )}
 
-       {/*  Deck  */}
+      {/*  Deck  */}
       {joinedGame && (
         <DivContainer>
           <Titles FontSize="1.5rem">User {currentUserId}</Titles>
