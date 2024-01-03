@@ -38,10 +38,10 @@ const FirebasePlanningPoker = () => {
     (state: RootState) => state.cardsDeckReducer.cards
   );
 
-  const mostFrequent = () => {
+  const mostFrequent = (boardCards: DeckCard[]) => {
     const valueFrequency: Record<string, number> = {};
 
-    selectedCards.forEach(({ value }) => {
+    boardCards.forEach(({ value }) => {
       if (valueFrequency[value]) {
         valueFrequency[value]++;
       } else {
@@ -100,23 +100,22 @@ const FirebasePlanningPoker = () => {
     setGameDocumentId(gameDocId);
   };
 
-  const handleClickDeck2 = async (cardValue: string) => {
+  const handleCardSelection = async (cardValue: string) => {
     const gameDocRef = doc(db, "planning-poker", gameDocumentId);
 
     if (selectedCards.length > 0) {
-      setCardMessage("Solo puede seleccionar una carta");
+      setCardMessage("You can only choose one card");
       return;
     }
 
     await updateDoc(gameDocRef, {
       [`${currentUserId}`]: { cardValue },
     });
-
     const selectedCard: DeckCard = {
       id: selectedCards.length + 1,
       value: cardValue,
     };
-    setSelectedCards([...selectedCards, selectedCard]);
+    setSelectedCards([selectedCard]);
   };
 
   return (
@@ -164,9 +163,7 @@ const FirebasePlanningPoker = () => {
           gameDocumentId={gameDocumentId}
         />
       </DivContainer>
-      {cardMessage && (
-        <WarningMessage>You can only choose one card</WarningMessage>
-      )}
+      {cardMessage && <WarningMessage>{cardMessage}</WarningMessage>}
 
       {/*  Deck  */}
       {joinedGame && (
@@ -179,7 +176,7 @@ const FirebasePlanningPoker = () => {
                 BackgroundColor="white"
                 Hover="#92c43b67"
                 key={card.id}
-                onClick={() => handleClickDeck2(card.value)}
+                onClick={() => handleCardSelection(card.value)}
               >
                 {card.value}
               </Card>
